@@ -54,10 +54,7 @@
                     <label class="radio-checkbox-label"
                       >{{ inputProps["label"] }} :
                     </label>
-                    <mat-radio-group
-                      class="radio-group"
-                      [(ngModel)]="inputProps['options']"
-                    >
+                    <mat-radio-group class="radio-group">
                       <mat-radio-button
                         class="radio-button"
                         *ngFor="let option of inputProps['options']"
