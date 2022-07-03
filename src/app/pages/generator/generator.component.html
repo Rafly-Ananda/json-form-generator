@@ -8,13 +8,7 @@
   </div>
 
   <mat-card>
-    <div
-      class="schema-name-heading-container"
-      *ngIf="
-        jsonSchema.schemaName.length > 0 &&
-        jsonSchema.schemaDescription.length > 0
-      "
-    >
+    <div class="schema-name-heading-container">
       <mat-form-field appearance="fill">
         <mat-label>Schema Title</mat-label>
         <input matInput [(ngModel)]="jsonSchema.schemaName" />
