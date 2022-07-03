@@ -1,0 +1,88 @@
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 2em;
+  gap: 2em;
+
+  .button-container {
+    display: flex;
+    gap: 2em;
+  }
+
+  .card-heading-text {
+    font-weight: 600;
+  }
+
+  mat-list-item {
+    height: auto;
+    margin-top: 1em;
+
+    .control-display-wrapper {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-right: 2em;
+      .inner-control-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2em;
+      }
+      .control-display-container {
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+
+        .radio-checkbox-label {
+          font-weight: 500;
+        }
+
+        .radio-control-container {
+          .radio-group {
+            display: flex;
+            flex-direction: row;
+            margin: 15px 0;
+            align-items: flex-start;
+          }
+
+          .radio-button {
+            margin: 5px;
+          }
+        }
+
+        .checkbox-control-container {
+          .checkbox-group {
+            display: flex;
+            flex-direction: row;
+            gap: 1em;
+          }
+        }
+      }
+    }
+  }
+
+  .save-btn-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2em;
+  }
+
+  .json-preview-container {
+    margin-top: 50vh;
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+  }
+
+  .schema-name-heading-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    mat-form-field {
+      width: 50%;
+    }
+  }
+}

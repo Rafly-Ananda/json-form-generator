@@ -1,0 +1,92 @@
+<h1 mat-dialog-title>Generate Input Schema</h1>
+<div mat-dialog-content>
+  <div class="input-wrapper">
+    <mat-form-field appearance="fill">
+      <mat-label>Input Description</mat-label>
+      <input matInput [(ngModel)]="inputDesc" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Input Label</mat-label>
+      <input matInput [(ngModel)]="inputLabel" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Input Type</mat-label>
+
+      <mat-select [(ngModel)]="selectedType">
+        <!-- ? This Commented Input Follows JSONForms Format -->
+        <!-- <mat-option value="string">Text</mat-option>
+        <mat-option value="number">Number</mat-option>
+        <mat-option value="string_email">Email</mat-option>
+        <mat-option value="boolean">Yes / No</mat-option>
+        <mat-option value="string_date">Date</mat-option>
+        <mat-option value="string_time">Time</mat-option>
+        <mat-option value="string_enum_single">Single Select</mat-option>
+        <mat-option value="string_enum_multiple">Multiple Select</mat-option>
+      </mat-select> -->
+        <!-- ? This Is Normal HTML Input -->
+        <mat-option value="text">Text</mat-option>
+        <mat-option value="number">Number</mat-option>
+        <mat-option value="email">Email</mat-option>
+        <!-- <mat-option value="boolean">Yes / No</mat-option> -->
+        <mat-option value="date">Date</mat-option>
+        <mat-option value="time">Time</mat-option>
+        <mat-option value="password">Password</mat-option>
+        <!-- <mat-option value="file">File</mat-option> -->
+        <!-- ! this needs values props -->
+        <mat-option value="enum_radio">Single Select</mat-option>
+        <mat-option value="enum_checkbox">Multiple Select</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div *ngIf="selectedType.split('_').includes('enum')" class="select-class">
+      <mat-form-field appearance="fill">
+        <mat-label>Select Options</mat-label>
+        <mat-chip-list #chipList>
+          <mat-chip
+            *ngFor="let option of selectOptions"
+            (removed)="remove(option)"
+          >
+            {{ option }}
+            <button matChipRemove>
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip>
+          <input
+            placeholder="New Options..."
+            #selectOptionsInput
+            [formControl]="selectOptionCtrl"
+            [matChipInputFor]="chipList"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+            (matChipInputTokenEnd)="add($event)"
+          />
+        </mat-chip-list>
+      </mat-form-field>
+
+      <!-- <mat-checkbox
+        id="select-to-radio"
+        type="checkbox"
+        [checked]="convertSelectToRadio"
+        (change)="convertSelectToRadio = !convertSelectToRadio"
+        >Display Select As Radio</mat-checkbox
+      > -->
+    </div>
+
+    <mat-checkbox
+      id="input-required"
+      type="checkbox"
+      [checked]="isInputRequired"
+      (change)="isInputRequired = !isInputRequired"
+      >Required</mat-checkbox
+    >
+  </div>
+</div>
+<div mat-dialog-actions class="dialog-btns">
+  <app-button [buttonTitle]="'No'" mat-dialog-close></app-button>
+  <app-button
+    [buttonTitle]="'Ok'"
+    mat-dialog-close
+    (click)="onJSONSchemaGenerate(); onUISchemaGenerate()"
+  ></app-button>
+</div>

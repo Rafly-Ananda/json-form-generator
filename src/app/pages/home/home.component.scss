@@ -1,0 +1,56 @@
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 2em;
+  gap: 2em;
+
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  table {
+    border-radius: 1em;
+    width: 100%;
+
+    .mat-column-id.mat-column-schemaName.mat-column-createdAt.mat-column-schemaDescription {
+      word-wrap: break-word !important;
+      white-space: unset !important;
+      flex: 0 0 28% !important;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      word-break: break-word;
+
+      -ms-hyphens: auto;
+      -moz-hyphens: auto;
+      -webkit-hyphens: auto;
+      hyphens: auto;
+    }
+
+    .mat-column-id {
+      width: 10% !important;
+    }
+
+    .mat-column-schemaName {
+      width: 20% !important;
+    }
+
+    .mat-column-createdAt {
+      width: 30% !important;
+    }
+
+    .mat-column-schemaDescription {
+      width: 50% !important;
+    }
+  }
+
+  .mat-row .mat-cell {
+    border-bottom: 1px solid transparent;
+    border-top: 1px solid transparent;
+    cursor: pointer;
+  }
+
+  .mat-row:hover .mat-cell {
+    border-color: currentColor;
+  }
+}

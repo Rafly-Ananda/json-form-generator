@@ -1,0 +1,127 @@
+<div class="input-wrapper" *ngIf="jsonSchema">
+  <div class="button-container">
+    <app-button
+      mat-raised-button
+      [buttonTitle]="'Generate Input'"
+      (click)="openNewControlDialog('0ms', '0ms')"
+    ></app-button>
+  </div>
+
+  <mat-card>
+    <div class="schema-name-heading-container">
+      <mat-form-field appearance="fill">
+        <mat-label>Schema Title</mat-label>
+        <input matInput [(ngModel)]="jsonSchema.schemaName" />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Schema Description</mat-label>
+        <textarea
+          textarea
+          matInput
+          [(ngModel)]="jsonSchema.schemaDescription"
+        ></textarea>
+      </mat-form-field>
+    </div>
+    <h4 class="card-heading-text">Control Type</h4>
+    <mat-list>
+      <ng-container *ngFor="let inputProps of jsonSchemaProps; index as i">
+        <mat-list-item>
+          <div class="control-display-wrapper">
+            <div class="inner-control-wrapper">
+              <div class="control-display-index">
+                <span>
+                  {{ i + 1 }}
+                </span>
+              </div>
+              <!-- <div class="control-display-container">
+                <span>Type : {{ inputProps["type"] }}</span>
+                <span>Label : {{ inputProps["label"] }}</span>
+                <ng-container *ngIf="inputProps['options']">
+                  <span>Select Options :</span>
+                  <span *ngFor="let e of inputProps['options']">
+                    {{ e }}
+                  </span>
+                </ng-container>
+                <span
+                  >Required :
+                  {{ inputProps["required"] ? "True" : "False" }}</span
+                >
+              </div> -->
+              <div class="control-display-container">
+                <!-- If input is a radio type -->
+                <ng-container *ngIf="inputProps['type'] === 'radio'">
+                  <div class="radio-control-container">
+                    <label class="radio-checkbox-label"
+                      >{{ inputProps["label"] }} :
+                    </label>
+                    <mat-radio-group
+                      class="radio-group"
+                      [(ngModel)]="inputProps['options']"
+                    >
+                      <mat-radio-button
+                        class="radio-button"
+                        *ngFor="let option of inputProps['options']"
+                        [value]="option"
+                      >
+                        {{ option }}
+                      </mat-radio-button>
+                    </mat-radio-group>
+                  </div>
+                </ng-container>
+
+                <ng-container check2 *ngIf="inputProps['type'] === 'checkbox'">
+                  <div class="checkbox-control-container">
+                    <h4 class="radio-checkbox-label">
+                      {{ inputProps["label"] }} :
+                    </h4>
+                    <div class="checkbox-group">
+                      <p *ngFor="let option of inputProps['options']">
+                        <mat-checkbox>{{ option }}</mat-checkbox>
+                      </p>
+                    </div>
+                  </div>
+                </ng-container>
+
+                <ng-container
+                  *ngIf="
+                    inputProps['type'] !== 'checkbox' &&
+                    inputProps['type'] !== 'radio'
+                  "
+                >
+                  <mat-form-field appearance="fill">
+                    <mat-label>{{ inputProps["label"] }}</mat-label>
+                    <input
+                      matInput
+                      [required]="inputProps['label']"
+                      [type]="inputProps['type']"
+                    />
+                  </mat-form-field>
+                </ng-container>
+              </div>
+            </div>
+
+            <app-button
+              mat-raised-button
+              [buttonTitle]="'Delete Input'"
+              (click)="deleteControl(inputProps)"
+            ></app-button>
+          </div>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+      </ng-container>
+    </mat-list>
+  </mat-card>
+
+  <div class="save-btn-container">
+    <app-button
+      mat-raised-button
+      [buttonTitle]="'Delete Schema'"
+      (click)="deleteSchema()"
+    ></app-button>
+    <app-button
+      mat-raised-button
+      [buttonTitle]="'Save Schema'"
+      (click)="saveSchema()"
+    ></app-button>
+  </div>
+</div>

@@ -1,0 +1,17 @@
+.dialog-btns {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2em;
+}
+
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 2em;
+  gap: 2em;
+}
+
+mat-form-field {
+  width: 100%;
+}
