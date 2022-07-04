@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { JSONSchema, JSONSchemaProps } from 'src/app/interfaces/jsonSchema';
 import { JsonSchemaService } from 'src/app/services/json-schema.service';
 import { MatDialog } from '@angular/material/dialog';
 import { NewControlDialogComponent } from 'src/app/components/dialogs/new-control-dialog/new-control-dialog.component';
+import { FormControl, Validators } from '@angular/forms';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-schema-details',
@@ -11,18 +13,38 @@ import { NewControlDialogComponent } from 'src/app/components/dialogs/new-contro
   styleUrls: ['./schema-details.component.scss'],
 })
 export class SchemaDetailsComponent implements OnInit {
+  autoCompleteControl = new FormControl({});
+  options: Array<object> = [
+    { id: 1, name: 'Jake', nik: 678213 },
+    { id: 2, name: 'Jane', nik: 109238 },
+    { id: 3, name: 'Mary', nik: 991930 },
+    { id: 4, name: 'Marston', nik: 667291 },
+    { id: 5, name: 'John', nik: 380137 },
+    { id: 6, name: 'Jonah', nik: 227193 },
+    { id: 7, name: 'Mike', nik: 518031 },
+  ];
+
+  schemaTitleFormControl = new FormControl('', [Validators.required]);
+  schemaDescFormControl = new FormControl('', [Validators.required]);
   jsonSchema!: JSONSchema;
   jsonSchemaProps!: JSONSchemaProps[];
-
-  favoriteSeason!: string;
-  seasons: string[] = ['Winter', 'Spring', 'Summer', 'Autumn'];
+  initState!: JSONSchema;
 
   constructor(
     private _route: ActivatedRoute,
     private _router: Router,
     private _jsonSchemaService: JsonSchemaService,
     public dialog: MatDialog
-  ) {}
+  ) {
+    this.schemaTitleFormControl.valueChanges.subscribe({
+      next: (res) =>
+        (this.jsonSchema = { ...this.jsonSchema, schemaName: res! }),
+    });
+    this.schemaDescFormControl.valueChanges.subscribe({
+      next: (res) =>
+        (this.jsonSchema = { ...this.jsonSchema, schemaDescription: res! }),
+    });
+  }
 
   ngOnInit(): void {
     const id = this._route.snapshot.paramMap.get('id');
@@ -31,45 +53,50 @@ export class SchemaDetailsComponent implements OnInit {
         next: (v) => {
           if (v) {
             this._jsonSchemaService.schema = { ...v };
+            this.initState = { ...v };
           }
         },
       });
 
       this._jsonSchemaService.schemaObservable.subscribe({
         next: (v) => {
-          let tempArray = [];
+          let tempArray: JSONSchemaProps[] = [];
           let tempObj = {};
           this.jsonSchema = { ...v };
+          this.schemaTitleFormControl.setValue(this.jsonSchema.schemaName);
+          this.schemaDescFormControl.setValue(
+            this.jsonSchema.schemaDescription
+          );
+
           for (let e in v.properties) {
-            // if e in required array then the input field is required
+            tempObj = {
+              key: e,
+              label: this.jsonSchema.properties[e]['label'],
+              required: this.jsonSchema.required?.includes(e) ? true : false,
+              type: this.jsonSchema.properties[e]['type'],
+              description: this.jsonSchema.properties[e]['description'],
+            };
+
+            // ? if e in required array then the input field is required
             if (this.jsonSchema.properties[e]['items'] !== undefined) {
               tempObj = {
-                label: this.jsonSchema.properties[e]['label'],
-                type: this.jsonSchema.properties[e]['type'],
+                ...tempObj,
                 options: Object.values(
                   this.jsonSchema.properties[e]['items']
                 )[1],
-                required: this.jsonSchema.required?.includes(e) ? true : false,
-              };
-            } else {
-              tempObj = {
-                label: this.jsonSchema.properties[e]['label'],
-                type: this.jsonSchema.properties[e]['type'],
-                required: this.jsonSchema.required?.includes(e) ? true : false,
               };
             }
 
             tempArray.push(tempObj);
           }
-          this.jsonSchemaProps = tempArray;
+
+          this.jsonSchemaProps = [...tempArray];
         },
       });
     }
   }
 
   saveSchema(): void {
-    // ? If the new input key is duplicate in object key, the object key will be replaced, normal object behaviour in javascript
-
     const date = new Date().toLocaleDateString(undefined, {
       year: 'numeric',
       month: 'long',
@@ -106,8 +133,7 @@ export class SchemaDetailsComponent implements OnInit {
     }
   }
 
-  deleteControl(e: any) {
-    let objKey = e.label.toLowerCase().replace(/\s+/g, '');
+  deleteControl(objKey: string) {
     let tempObj = { ...this.jsonSchema };
     delete tempObj.properties[`${objKey}`];
     tempObj.required = tempObj.required?.filter((e) => e !== objKey);
@@ -133,5 +159,9 @@ export class SchemaDetailsComponent implements OnInit {
       enterAnimationDuration,
       exitAnimationDuration,
     });
+  }
+
+  isChanged(): boolean {
+    return _.isEqual(this.jsonSchema, this.initState);
   }
 }

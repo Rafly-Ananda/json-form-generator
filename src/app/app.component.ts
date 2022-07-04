@@ -11,7 +11,9 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this._jsonSchemaService.fetchSchemas().subscribe({
-      next: (res) => (this._jsonSchemaService.schemas = res),
+      next: (res) => {
+        this._jsonSchemaService.schemas = res;
+      },
     });
   }
 }

@@ -25,6 +25,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 import { HomeComponent } from './pages/home/home.component';
 import { GeneratorComponent } from './pages/generator/generator.component';
@@ -32,6 +34,7 @@ import { SchemaDetailsComponent } from './pages/schema-details/schema-details.co
 import { ButtonComponent } from './components/button/button.component';
 import { NewControlDialogComponent } from './components/dialogs/new-control-dialog/new-control-dialog.component';
 import { NewSchemaDialogComponent } from './components/dialogs/new-schema-dialog/new-schema-dialog.component';
+import { GenericInputComponent } from './components/generic-input/generic-input.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +45,7 @@ import { NewSchemaDialogComponent } from './components/dialogs/new-schema-dialog
     ButtonComponent,
     NewControlDialogComponent,
     NewSchemaDialogComponent,
+    GenericInputComponent,
   ],
   imports: [
     MatChipsModule,
@@ -60,6 +64,8 @@ import { NewSchemaDialogComponent } from './components/dialogs/new-schema-dialog
     MatSortModule,
     MatRadioModule,
     MatTableModule,
+    MatTooltipModule,
+    MatAutocompleteModule,
     BrowserModule,
     CommonModule,
     FormsModule,

@@ -15,6 +15,7 @@
 
   mat-list-item {
     height: auto;
+    // margin: 1em 0 0.5em 0;
     margin-top: 1em;
 
     .control-display-wrapper {
@@ -28,34 +29,72 @@
         align-items: center;
         justify-content: center;
         gap: 2em;
-      }
-      .control-display-container {
-        display: flex;
-        align-items: center;
-        gap: 0.5em;
 
-        .radio-checkbox-label {
-          font-weight: 500;
-        }
+        .control-display-container {
+          display: flex;
+          align-items: center;
+          gap: 0.5em;
 
-        .radio-control-container {
-          .radio-group {
+          .input-container {
+            padding: 0;
             display: flex;
-            flex-direction: row;
-            margin: 15px 0;
-            align-items: flex-start;
-          }
-
-          .radio-button {
-            margin: 5px;
-          }
-        }
-
-        .checkbox-control-container {
-          .checkbox-group {
-            display: flex;
-            flex-direction: row;
+            align-items: center;
+            justify-content: center;
             gap: 1em;
+
+            .tooltip-button-generic {
+              background-color: rgb(165, 165, 165);
+              transform: scale(0.7);
+              margin-bottom: 1em;
+
+              mat-icon {
+                color: white;
+              }
+            }
+
+            .tooltip-button {
+              background-color: rgb(165, 165, 165);
+              transform: scale(0.7);
+              margin-top: 1.5em;
+
+              mat-icon {
+                color: white;
+              }
+            }
+
+            .radio-control-container {
+              display: flex;
+              flex-direction: column;
+              gap: 1em;
+              margin-bottom: 1em;
+
+              .radio-group {
+                display: flex;
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 1em;
+              }
+            }
+
+            .checkbox-control-container {
+              display: flex;
+              flex-direction: column;
+              gap: 1em;
+
+              .checkbox-group {
+                display: flex;
+                flex-direction: row;
+                gap: 1em;
+              }
+            }
+          }
+
+          .select-hint {
+            font-size: 0.75rem;
+          }
+
+          .radio-checkbox-label {
+            font-weight: 500;
           }
         }
       }

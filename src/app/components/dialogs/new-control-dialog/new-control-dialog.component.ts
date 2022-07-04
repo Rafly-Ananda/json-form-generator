@@ -1,21 +1,32 @@
-import {
-  Component,
-  ElementRef,
-  ViewChild,
-  OnInit,
-  OnDestroy,
-} from '@angular/core';
+import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { JsonSchemaService } from 'src/app/services/json-schema.service';
 import { UiSchemaService } from 'src/app/services/ui-schema.service';
 import { UISchema, UISchemaElements } from 'src/app/interfaces/uiSchema';
 import { JSONSchema } from 'src/app/interfaces/jsonSchema';
+import { FormControl, Validators } from '@angular/forms';
+import { nanoid } from 'nanoid';
 
 // ? used by material angular chips
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { FormControl } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+
+interface MockEmployee {
+  id: number;
+  name: string;
+  nik: number;
+}
+
+interface MockDepartment {
+  id: number;
+  name: string;
+}
+
+interface DataTypeOptions {
+  name: string;
+  value: MockEmployee[] | MockDepartment[];
+}
 
 @Component({
   selector: 'app-new-control-dialog',
@@ -23,11 +34,41 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
   styleUrls: ['./new-control-dialog.component.scss'],
 })
 export class NewControlDialogComponent implements OnInit {
+  autoCompleteControl = new FormControl({});
+  predefinedEmployeeDataset: MockEmployee[] = [
+    { id: 1, name: 'Jake', nik: 678213 },
+    { id: 2, name: 'Jane', nik: 109238 },
+    { id: 3, name: 'Mary', nik: 991930 },
+    { id: 4, name: 'Marston', nik: 667291 },
+    { id: 5, name: 'John', nik: 380137 },
+    { id: 6, name: 'Jonah', nik: 227193 },
+    { id: 7, name: 'Mike', nik: 518031 },
+  ];
+  predefinedDepartementDataset: MockDepartment[] = [
+    { id: 1, name: 'Operational' },
+    { id: 2, name: 'Development' },
+    { id: 3, name: 'Finance' },
+    { id: 4, name: 'General Affair' },
+    { id: 5, name: 'Human Resources' },
+  ];
+  predefinedDataTypeOptions: DataTypeOptions[] = [
+    { name: 'Employee', value: [...this.predefinedEmployeeDataset] },
+    { name: 'Department', value: [...this.predefinedDepartementDataset] },
+  ];
+  selectedDataset!: MockEmployee[] | MockDepartment[];
+  // predefinedDataTypeOptions: string[] = ['Employee'];
+  predefinedDataTypeSelection!: string;
+  predefinedLabelSelection!: string;
+  predefinedResultValue!: string;
+
   jsonSchema!: JSONSchema;
   uiSchema!: UISchema;
-  inputDesc: string = '';
-  selectedType: string = 'string';
-  inputLabel: string = '';
+
+  InputDescFormControl = new FormControl('', [Validators.required]);
+  InputLabelFormControl = new FormControl('', [Validators.required]);
+  InputTypeFormControl = new FormControl('', [Validators.required]);
+
+  isInputPredefined: boolean = false;
   isInputRequired: boolean = false;
   convertSelectToRadio: boolean = false;
 
@@ -84,8 +125,12 @@ export class NewControlDialogComponent implements OnInit {
 
   onJSONSchemaGenerate(): void {
     let propsTemp = {};
-    let inputType = this.selectedType.split('_');
-    let normalizedKey = this.inputLabel.toLowerCase().replace(/\s+/g, '');
+    let inputType = this.InputTypeFormControl.value!.split('_');
+    let normalizedKey = `${this.InputLabelFormControl.value!.toLowerCase().replace(
+      /\s+/g,
+      ''
+    )}-${nanoid(5)}`;
+
     // For date & time object, the format is different, this is where we differentiate them
     if (inputType.length > 1) {
       // if input type is select, JSON schcema need enum array, this if statement is to check for that
@@ -94,8 +139,8 @@ export class NewControlDialogComponent implements OnInit {
           if (this.convertSelectToRadio) {
             propsTemp = {
               [normalizedKey]: {
-                description: this.inputDesc,
-                label: this.inputLabel,
+                description: this.InputDescFormControl.value,
+                label: this.InputLabelFormControl.value,
                 type: inputType[0],
                 enum: [...this.selectOptions],
                 // ? this options object is used in UI Schema
@@ -107,8 +152,8 @@ export class NewControlDialogComponent implements OnInit {
           } else {
             propsTemp = {
               [normalizedKey]: {
-                description: this.inputDesc,
-                label: this.inputLabel,
+                description: this.InputDescFormControl.value,
+                label: this.InputLabelFormControl.value,
                 type: inputType[0],
                 enum: [...this.selectOptions],
               },
@@ -118,8 +163,8 @@ export class NewControlDialogComponent implements OnInit {
           if (this.convertSelectToRadio) {
             propsTemp = {
               [normalizedKey]: {
-                description: this.inputDesc,
-                label: this.inputLabel,
+                description: this.InputDescFormControl.value,
+                label: this.InputLabelFormControl.value,
                 // ? this type array is used to fill the gap for following JSONSchemas format
                 // type: 'array',
                 type: inputType[inputType.length - 1],
@@ -137,8 +182,8 @@ export class NewControlDialogComponent implements OnInit {
           } else {
             propsTemp = {
               [normalizedKey]: {
-                description: this.inputDesc,
-                label: this.inputLabel,
+                description: this.InputDescFormControl.value,
+                label: this.InputLabelFormControl.value,
                 // ? this type array is used to fill the gap for following JSONSchemas format
                 // type: 'array',
                 type: inputType[inputType.length - 1],
@@ -154,21 +199,33 @@ export class NewControlDialogComponent implements OnInit {
       } else {
         propsTemp = {
           [normalizedKey]: {
-            description: this.inputDesc,
-            label: this.inputLabel,
+            description: this.InputDescFormControl.value,
+            label: this.InputLabelFormControl.value,
             type: inputType[0],
             format: inputType[1],
           },
         };
       }
     } else {
-      propsTemp = {
-        [normalizedKey]: {
-          description: this.inputDesc,
-          label: this.inputLabel,
-          type: this.selectedType,
-        },
-      };
+      if (this.isInputPredefined) {
+        propsTemp = {
+          [normalizedKey]: {
+            description: this.InputDescFormControl.value,
+            type: `predefined_${inputType[0]}`,
+            label: this.predefinedLabelSelection,
+            autocompleteValues: this.predefinedResultValue,
+            autocompleteDataset: [],
+          },
+        };
+      } else {
+        propsTemp = {
+          [normalizedKey]: {
+            description: this.InputDescFormControl.value,
+            label: this.InputLabelFormControl.value,
+            type: this.InputTypeFormControl.value,
+          },
+        };
+      }
     }
 
     // Check if the input field is required or not
@@ -199,7 +256,6 @@ export class NewControlDialogComponent implements OnInit {
       UIObject = {
         type: 'Control',
         scope: `#/properties/${e}`,
-        // label: this.jsonSchema.properties[e]['label'],
         label: this.jsonSchema.properties[e]['label'],
       };
       this.jsonSchema.properties[e]['options'] !== undefined &&
@@ -211,5 +267,18 @@ export class NewControlDialogComponent implements OnInit {
       ...this.uiSchema,
       elements: [...this.uiSchema.elements, ...tempArray],
     };
+  }
+
+  setPredefinedDataType(obj: any) {
+    this.predefinedDataTypeSelection = obj.value.name;
+    this.selectedDataset = { ...obj.value.value[0] };
+  }
+
+  setPredefinedInputLabel({ value }: any) {
+    this.predefinedLabelSelection = value;
+  }
+
+  setpredefinedResultValue({ value }: any) {
+    this.predefinedResultValue = value;
   }
 }

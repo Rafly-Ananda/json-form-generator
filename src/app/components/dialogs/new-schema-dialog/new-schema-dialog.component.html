@@ -3,19 +3,39 @@
   <div class="input-wrapper">
     <mat-form-field appearance="fill">
       <mat-label>Schema Name</mat-label>
-      <input matInput [(ngModel)]="newSchemaName" />
+      <input matInput [formControl]="schemaTitleFormControl" />
+      <mat-error *ngIf="schemaTitleFormControl.hasError('required')">
+        Title is <strong>required</strong>
+      </mat-error>
     </mat-form-field>
     <mat-form-field appearance="fill">
       <mat-label>Schema Description</mat-label>
-      <input matInput [(ngModel)]="newShemaDesc" />
+      <input matInput [formControl]="schemaDescFormControl" />
+      <mat-error *ngIf="schemaDescFormControl.hasError('required')">
+        Description is <strong>required</strong>
+      </mat-error>
     </mat-form-field>
   </div>
 </div>
 <div mat-dialog-actions class="dialog-btns">
-  <app-button [buttonTitle]="'No'" mat-dialog-close></app-button>
+  <app-button
+    [buttonTitle]="'No'"
+    mat-dialog-close
+    [disabled]="
+      schemaTitleFormControl.value === '' || schemaDescFormControl.value === ''
+        ? true
+        : false
+    "
+    [routerLink]="'/home'"
+  ></app-button>
   <app-button
     [buttonTitle]="'Ok'"
     mat-dialog-close
+    [disabled]="
+      schemaTitleFormControl.value === '' || schemaDescFormControl.value === ''
+        ? true
+        : false
+    "
     (click)="onAssignNewSchema()"
   ></app-button>
 </div>

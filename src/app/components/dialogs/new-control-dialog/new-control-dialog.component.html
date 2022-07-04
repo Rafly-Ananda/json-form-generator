@@ -3,18 +3,23 @@
   <div class="input-wrapper">
     <mat-form-field appearance="fill">
       <mat-label>Input Description</mat-label>
-      <input matInput [(ngModel)]="inputDesc" />
+      <input matInput [formControl]="InputDescFormControl" />
+      <mat-error *ngIf="InputDescFormControl.hasError('required')">
+        Descrtiption is <strong>required</strong>
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="fill">
       <mat-label>Input Label</mat-label>
-      <input matInput [(ngModel)]="inputLabel" />
+      <input matInput [formControl]="InputLabelFormControl" />
+      <mat-error *ngIf="InputLabelFormControl.hasError('required')">
+        Label is <strong>required</strong>
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="fill">
       <mat-label>Input Type</mat-label>
-
-      <mat-select [(ngModel)]="selectedType">
+      <mat-select matInput [formControl]="InputTypeFormControl">
         <!-- ? This Commented Input Follows JSONForms Format -->
         <!-- <mat-option value="string">Text</mat-option>
         <mat-option value="number">Number</mat-option>
@@ -25,22 +30,31 @@
         <mat-option value="string_enum_single">Single Select</mat-option>
         <mat-option value="string_enum_multiple">Multiple Select</mat-option>
       </mat-select> -->
-        <!-- ? This Is Normal HTML Input -->
+        <!-- ? This Is Input Follows Normal HTML Input -->
         <mat-option value="text">Text</mat-option>
         <mat-option value="number">Number</mat-option>
         <mat-option value="email">Email</mat-option>
-        <!-- <mat-option value="boolean">Yes / No</mat-option> -->
         <mat-option value="date">Date</mat-option>
+        <mat-option value="month">Month</mat-option>
+        <mat-option value="week">Week</mat-option>
+        <mat-option value="url">URL</mat-option>
+        <mat-option value="tel">Phone Number</mat-option>
         <mat-option value="time">Time</mat-option>
         <mat-option value="password">Password</mat-option>
-        <!-- <mat-option value="file">File</mat-option> -->
+        <mat-option value="color">Color</mat-option>
         <!-- ! this needs values props -->
         <mat-option value="enum_radio">Single Select</mat-option>
         <mat-option value="enum_checkbox">Multiple Select</mat-option>
       </mat-select>
+      <mat-error *ngIf="InputTypeFormControl.hasError('required')">
+        Type is <strong>required</strong>
+      </mat-error>
     </mat-form-field>
 
-    <div *ngIf="selectedType.split('_').includes('enum')" class="select-class">
+    <div
+      *ngIf="InputTypeFormControl.value!.split('_').includes('enum')"
+      class="select-class"
+    >
       <mat-form-field appearance="fill">
         <mat-label>Select Options</mat-label>
         <mat-chip-list #chipList>
@@ -74,6 +88,59 @@
     </div>
 
     <mat-checkbox
+      *ngIf="InputTypeFormControl.value === 'text'"
+      id="input-predefined"
+      type="checkbox"
+      [checked]="isInputPredefined"
+      (change)="isInputPredefined = !isInputPredefined"
+      >Predefined</mat-checkbox
+    >
+
+    <div class="predefined-options" *ngIf="isInputPredefined">
+      <mat-form-field appearance="fill">
+        <mat-label>Predefined Data Type</mat-label>
+        <mat-select (selectionChange)="setPredefinedDataType($event)">
+          <mat-option
+            *ngFor="let option of predefinedDataTypeOptions"
+            [value]="option"
+          >
+            {{ option.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <ng-container *ngIf="predefinedDataTypeSelection !== undefined">
+        <mat-form-field appearance="fill">
+          <mat-label>Autocomplete Labels</mat-label>
+          <mat-select (selectionChange)="setPredefinedInputLabel($event)">
+            <mat-option
+              *ngFor="let option of selectedDataset | keyvalue"
+              [value]="option.key"
+            >
+              {{ predefinedDataTypeSelection }}
+              {{ option.key[0].toUpperCase() + option.key.slice(1) }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Desired Result Values</mat-label>
+          <mat-select (selectionChange)="setpredefinedResultValue($event)">
+            <mat-option
+              *ngFor="let option of predefinedEmployeeDataset[0] | keyvalue"
+              [value]="option.key"
+            >
+              User {{ option.key[0].toUpperCase() + option.key.slice(1) }}
+            </mat-option>
+            <mat-option [value]="'full_data'">
+              Full {{ predefinedDataTypeSelection }} Data
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-container>
+    </div>
+
+    <mat-checkbox
       id="input-required"
       type="checkbox"
       [checked]="isInputRequired"
@@ -83,10 +150,27 @@
   </div>
 </div>
 <div mat-dialog-actions class="dialog-btns">
-  <app-button [buttonTitle]="'No'" mat-dialog-close></app-button>
+  <app-button
+    [buttonTitle]="'No'"
+    mat-dialog-close
+    [disabled]="
+      InputDescFormControl.value === '' ||
+      InputLabelFormControl.value === '' ||
+      InputTypeFormControl.value === ''
+        ? true
+        : false
+    "
+  ></app-button>
   <app-button
     [buttonTitle]="'Ok'"
     mat-dialog-close
+    [disabled]="
+      InputDescFormControl.value === '' ||
+      InputLabelFormControl.value === '' ||
+      InputTypeFormControl.value === ''
+        ? true
+        : false
+    "
     (click)="onJSONSchemaGenerate(); onUISchemaGenerate()"
   ></app-button>
 </div>

@@ -1,191 +1,39 @@
 {
   "json_schemas": [
     {
-      "schemaName": "test1",
-      "schemaDescription": "test1",
+      "schemaName": "aa",
+      "schemaDescription": "aa",
       "properties": {
-        "a": {
-          "description": "a",
-          "label": "a",
+        "aa-OyT9G": {
+          "description": "aa",
+          "label": "aa",
           "type": "text"
         },
-        "b": {
-          "description": "b",
-          "label": "b",
-          "type": "number"
-        },
-        "qwewqeqweqwe": {
-          "description": "aadas",
-          "label": "qwewqeqweqwe",
-          "type": "radio",
-          "uniqueItems": true,
-          "items": {
-            "type": "enum",
-            "enum": [
-              "aa",
-              "bb",
-              "cc",
-              "dd",
-              "ee",
-              "ff",
-              "gg"
-            ]
-          }
-        },
-        "qewq": {
-          "description": "qeqw",
-          "label": "qewq",
-          "type": "checkbox",
-          "uniqueItems": true,
-          "items": {
-            "type": "enum",
-            "enum": [
-              "asdsa",
-              "adssa",
-              "asdsa"
-            ]
-          }
+        "aa-s-vCw": {
+          "description": "aa",
+          "label": "aa",
+          "type": "text"
         }
       },
       "schemas": [
         {
-          "label": "a",
+          "key": "aa-OyT9G",
+          "label": "aa",
+          "required": false,
           "type": "text",
-          "required": true
+          "description": "aa"
         },
         {
-          "label": "b",
-          "type": "number",
-          "required": true
-        },
-        {
-          "label": "qwewqeqweqwe",
-          "type": "radio",
-          "options": [
-            "aa",
-            "bb",
-            "cc",
-            "dd",
-            "ee",
-            "ff",
-            "gg"
-          ],
-          "required": false
-        },
-        {
-          "label": "qewq",
-          "type": "checkbox",
-          "options": [
-            "asdsa",
-            "adssa",
-            "asdsa"
-          ],
-          "required": false
-        }
-      ],
-      "required": [
-        "a",
-        "b"
-      ],
-      "createdAt": "July 3, 2022",
-      "id": 1
-    },
-    {
-      "schemaName": "adsa",
-      "schemaDescription": "adasd",
-      "properties": {
-        "adasd": {
-          "description": "asdsa",
-          "label": "adasd",
-          "type": "text"
-        },
-        "asdas": {
-          "description": "asda",
-          "label": "asdas",
-          "type": "checkbox",
-          "uniqueItems": true,
-          "items": {
-            "type": "enum",
-            "enum": [
-              "adas",
-              "asd",
-              "asdasd",
-              "zx"
-            ]
-          }
-        },
-        "qe": {
-          "description": "zz",
-          "label": "qe",
-          "type": "checkbox",
-          "uniqueItems": true,
-          "items": {
-            "type": "enum",
-            "enum": [
-              "qweas",
-              "asdas",
-              "dqwe"
-            ]
-          }
-        },
-        "asdsa": {
-          "description": "asdas",
-          "label": "asdsa",
-          "type": "radio",
-          "uniqueItems": true,
-          "items": {
-            "type": "enum",
-            "enum": [
-              "asda",
-              "asd",
-              "asdsa",
-              "asd"
-            ]
-          }
-        }
-      },
-      "schemas": [
-        {
-          "label": "adasd",
+          "key": "aa-s-vCw",
+          "label": "aa",
+          "required": false,
           "type": "text",
-          "required": false
-        },
-        {
-          "label": "asdas",
-          "type": "checkbox",
-          "options": [
-            "adas",
-            "asd",
-            "asdasd",
-            "zx"
-          ],
-          "required": false
-        },
-        {
-          "label": "qe",
-          "type": "checkbox",
-          "options": [
-            "qweas",
-            "asdas",
-            "dqwe"
-          ],
-          "required": false
-        },
-        {
-          "label": "asdsa",
-          "type": "radio",
-          "options": [
-            "asda",
-            "asd",
-            "asdsa",
-            "asd"
-          ],
-          "required": false
+          "description": "aa"
         }
       ],
       "required": [],
-      "createdAt": "July 3, 2022",
-      "id": 2
+      "createdAt": "July 4, 2022",
+      "id": 1
     }
   ]
 }

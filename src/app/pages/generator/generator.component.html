@@ -10,16 +10,22 @@
   <mat-card>
     <div class="schema-name-heading-container">
       <mat-form-field appearance="fill">
-        <mat-label>Schema Title</mat-label>
-        <input matInput [(ngModel)]="jsonSchema.schemaName" />
+        <mat-label>Schema Name</mat-label>
+        <input matInput [formControl]="schemaTitleFormControl" />
+        <mat-error *ngIf="schemaTitleFormControl.hasError('required')">
+          Title is <strong>required</strong>
+        </mat-error>
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>Schema Description</mat-label>
         <textarea
           textarea
           matInput
-          [(ngModel)]="jsonSchema.schemaDescription"
+          [formControl]="schemaDescFormControl"
         ></textarea>
+        <mat-error *ngIf="schemaDescFormControl.hasError('required')">
+          Description is <strong>required</strong>
+        </mat-error>
       </mat-form-field>
     </div>
     <h4 class="card-heading-text">Control Type</h4>
@@ -33,29 +39,12 @@
                   {{ i + 1 }}
                 </span>
               </div>
-              <!-- <div class="control-display-container">
-                <span>Type : {{ inputProps["type"] }}</span>
-                <span>Label : {{ inputProps["label"] }}</span>
-                <ng-container *ngIf="inputProps['options']">
-                  <span>Select Options :</span>
-                  <span *ngFor="let e of inputProps['options']">
-                    {{ e }}
-                  </span>
-                </ng-container>
-                <span
-                  >Required :
-                  {{ inputProps["required"] ? "True" : "False" }}</span
-                >
-              </div> -->
               <div class="control-display-container">
                 <!-- If input is a radio type -->
                 <ng-container *ngIf="inputProps['type'] === 'radio'">
                   <div class="radio-control-container">
                     <label>{{ inputProps["label"] }} : </label>
-                    <mat-radio-group
-                      class="radio-group"
-                      [(ngModel)]="inputProps['options']"
-                    >
+                    <mat-radio-group class="radio-group">
                       <mat-radio-button
                         class="radio-button"
                         *ngFor="let option of inputProps['options']"
@@ -64,10 +53,16 @@
                         {{ option }}
                       </mat-radio-button>
                     </mat-radio-group>
+                    <!-- <mat-hint align="start"
+                      ><strong class="select-hint">{{
+                        inputProps["description"]
+                      }}</strong>
+                    </mat-hint> -->
                   </div>
                 </ng-container>
 
-                <ng-container check2 *ngIf="inputProps['type'] === 'checkbox'">
+                <!-- If input is a checkbox type -->
+                <ng-container *ngIf="inputProps['type'] === 'checkbox'">
                   <div class="checkbox-control-container">
                     <h4>{{ inputProps["label"] }} :</h4>
                     <div class="checkbox-group">
@@ -75,13 +70,62 @@
                         <mat-checkbox>{{ option }}</mat-checkbox>
                       </p>
                     </div>
+                    <!-- <mat-hint align="start"
+                      ><strong class="select-hint">{{
+                        inputProps["description"]
+                      }}</strong>
+                    </mat-hint> -->
                   </div>
                 </ng-container>
 
+                <!-- If input is a tel type -->
+                <ng-container *ngIf="inputProps['type'] === 'tel'">
+                  <mat-form-field class="example-full-width" appearance="fill">
+                    <mat-label>{{ inputProps["label"] }}</mat-label>
+                    <span matPrefix>+62 &nbsp;</span>
+                    <input type="tel" matInput placeholder="812-3456-7890" />
+                    <!-- <mat-hint align="start"
+                      ><strong>{{ inputProps["description"] }}</strong>
+                    </mat-hint> -->
+                  </mat-form-field>
+                </ng-container>
+
+                <!-- If input is an autocomplete -->
+                <ng-container *ngIf="inputProps['type'] === 'predefined_text'">
+                  <form class="example-form">
+                    <mat-form-field
+                      class="example-full-width"
+                      appearance="fill"
+                    >
+                      <mat-label>Assignee</mat-label>
+                      <input
+                        type="text"
+                        matInput
+                        [formControl]="autoCompleteControl"
+                        [matAutocomplete]="auto"
+                      />
+                      <mat-autocomplete
+                        #auto="matAutocomplete"
+                        [displayWith]="displayFn"
+                      >
+                        <mat-option
+                          *ngFor="let option of filteredOptions | async"
+                          [value]="option"
+                        >
+                          {{ option.name }}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                  </form>
+                </ng-container>
+
+                <!-- Base case generic input -->
                 <ng-container
                   *ngIf="
                     inputProps['type'] !== 'checkbox' &&
-                    inputProps['type'] !== 'radio'
+                    inputProps['type'] !== 'radio' &&
+                    inputProps['type'] !== 'tel' &&
+                    inputProps['type'] !== 'predefined_text'
                   "
                 >
                   <mat-form-field appearance="fill">
@@ -91,6 +135,9 @@
                       [required]="inputProps['label']"
                       [type]="inputProps['type']"
                     />
+                    <!-- <mat-hint align="start"
+                      ><strong>{{ inputProps["description"] }}</strong>
+                    </mat-hint> -->
                   </mat-form-field>
                 </ng-container>
               </div>
@@ -99,7 +146,7 @@
             <app-button
               mat-raised-button
               [buttonTitle]="'Delete Input'"
-              (click)="deleteControl(inputProps)"
+              (click)="deleteControl(inputProps['key'])"
             ></app-button>
           </div>
         </mat-list-item>
@@ -107,6 +154,26 @@
       </ng-container>
     </mat-list>
   </mat-card>
+
+  <!-- Auto Complete Component -->
+  <!-- <form class="example-form">
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Number</mat-label>
+      <input
+        type="text"
+        placeholder="Pick one"
+        aria-label="Number"
+        matInput
+        [formControl]="autoCompleteControl"
+        [matAutocomplete]="auto"
+      />
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let option of options" [value]="option">
+          {{ option }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </form> -->
 
   <div class="save-btn-container">
     <app-button
